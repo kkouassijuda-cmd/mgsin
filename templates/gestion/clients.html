@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static statique %}
+{% block titre %}Clients · Gestion{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% statique 'css/gestion.css' %}">{% endblock %}
+
+{% block contenu %}
+{% include "gestion/_menu.html" %}
+
+<div class="gestion-entete">
+  <h1>Clients</h1>
+  <form class="filtres" method="get">
+    <label class="visuellement-cache" for="q">Rechercher</label>
+    <input type="search" id="q" name="q" value="{{ recherche }}" placeholder="Nom ou téléphone">
+    <button class="bouton" type="submit">Rechercher</button>
+  </form>
+</div>
+
+{% if page.object_list %}
+  <div class="tableau-defilant">
+    <table class="tableau">
+      <thead>
+        <tr><th>Nom</th><th>Téléphone</th><th>Inscrit le</th><th class="nombre">Commandes</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for c in page.object_list %}
+          <tr>
+            <td>{{ c.prenom }} {{ c.nom }}</td>
+            <td>{{ c.telephone_affiche }}</td>
+            <td>{{ c.date_inscription|date:"d/m/Y" }}</td>
+            <td class="nombre">{{ c.nb_commandes }}</td>
+            <td><a class="bouton bouton--petit" href="{% url 'gestion:client' c.pk %}">Voir</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "partials/pagination.html" %}
+{% else %}
+  <p class="vide">Aucun client.</p>
+{% endif %}
+{% endblock %}

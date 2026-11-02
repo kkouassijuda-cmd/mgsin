@@ -1,0 +1,15 @@
+{% if commande.statut == 'annulee' %}
+  <div class="annulation">
+    <p class="annulation__titre">Commande annulée</p>
+    <p>Motif : {{ commande.motif_annulation }}</p>
+  </div>
+{% else %}
+  <ol class="suivi">
+    {% for etape in commande.suivi %}
+      <li class="suivi__etape{% if etape.faite %} suivi__etape--faite{% elif etape.en_cours %} suivi__etape--en-cours{% endif %}">
+        <span class="suivi__point" aria-hidden="true"></span>
+        <span class="suivi__libelle">{{ etape.libelle }}</span>
+      </li>
+    {% endfor %}
+  </ol>
+{% endif %}

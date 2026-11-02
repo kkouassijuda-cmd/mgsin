@@ -1,0 +1,16 @@
+{% load static statique %}
+<details class="categories">
+  <summary class="categories__bouton">
+    <span class="categories__icone" aria-hidden="true"><span></span></span>
+    <span class="categories__titre">Catégories</span>
+    {% if categorie %}<span class="categories__courante">{{ categorie.nom }}</span>{% endif %}
+  </summary>
+  <ul class="categories__liste">
+    <li><a class="categories__lien{% if not categorie %} categories__lien--actif{% endif %}" href="{% url 'catalogue:accueil' %}">Toutes les pièces</a></li>
+    {% for c in categories %}
+      <li><a class="categories__lien{% if categorie == c %} categories__lien--actif{% endif %}" href="{{ c.get_absolute_url }}">{{ c.nom }}</a></li>
+    {% endfor %}
+  </ul>
+</details>
+{# Chargé juste après le menu pour l'ouvrir avant l'affichage (pas de clignotement). #}
+<script src="{% statique 'js/categories.js' %}"></script>

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static statique fcfa %}
+{% block titre %}{{ commande.numero }} · {{ MAGASIN.nom }}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% statique 'css/commandes.css' %}">{% endblock %}
+
+{% block contenu %}
+<p class="fil"><a href="{% url 'commandes:mes_commandes' %}">← Mes commandes</a></p>
+
+<div id="suivi-commande"{% if not commande.est_terminee %} data-actualiser="{% url 'commandes:etat' commande.numero %}" data-secondes="{{ SUIVI_CLIENT_SECONDES }}"{% endif %}>
+  {% include "commandes/_suivi_client.html" %}
+</div>
+
+<div class="detail-grille">
+  <section class="bloc">
+    <h2>Informations</h2>
+    <dl class="infos">
+      <dt>Date</dt><dd>{{ commande.date_creation|date:"d/m/Y à H:i" }}</dd>
+      <dt>Mode</dt><dd>{{ commande.get_mode_display }}</dd>
+      <dt>Nom</dt><dd>{{ commande.client_prenom }} {{ commande.client_nom }}</dd>
+      <dt>Téléphone</dt><dd>{{ commande.client_telephone }}</dd>
+      {% if commande.adresse %}<dt>Adresse</dt><dd>{{ commande.adresse|linebreaksbr }}</dd>{% endif %}
+      <dt>Paiement</dt><dd>{{ commande.get_paiement_display }}</dd>
+    </dl>
+  </section>
+
+  <section class="bloc">
+    <h2>Pièces</h2>
+    {% include "partials/lignes.html" %}
+  </section>
+</div>
+{% endblock %}
+
+{% block js %}<script src="{% statique 'js/actualiser.js' %}" defer></script>{% endblock %}

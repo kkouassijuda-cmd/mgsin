@@ -1,0 +1,23 @@
+{% load fcfa %}
+{% if commandes %}
+  <ul class="liste-commandes">
+    {% for c in commandes %}
+      <li class="liste-commandes__item">
+        <a class="ligne-commande" href="{{ c.get_absolute_url }}">
+          <span class="ligne-commande__numero">{{ c.numero }}</span>
+          <span class="ligne-commande__date">{{ c.date_creation|date:"d/m/Y H:i" }}</span>
+          <span class="ligne-commande__mode">{{ c.get_mode_display }}</span>
+          <span class="ligne-commande__total">{{ c.total_fcfa|fcfa }}</span>
+          <span class="badge badge--{{ c.statut }}">{{ c.get_statut_display }}</span>
+          <span class="ligne-commande__message">{{ c.message_client }}</span>
+        </a>
+        {% if c.recu_disponible %}
+          <a class="liste-commandes__recu" href="{% url 'commandes:recu' c.numero %}">Télécharger le reçu (PDF)</a>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="vide">Vous n'avez pas encore passé de commande.</p>
+  <a class="bouton bouton--principal" href="{% url 'catalogue:accueil' %}">Voir les pièces</a>
+{% endif %}

@@ -1,0 +1,19 @@
+<div class="detail-entete">
+  <h1>Commande {{ commande.numero }}</h1>
+  <span class="badge badge--{{ commande.statut }}">{{ commande.get_statut_display }}</span>
+</div>
+
+<p class="message-etape message-etape--{{ commande.statut }}">{{ commande.message_client }}</p>
+
+{% include "partials/suivi.html" %}
+
+<div class="zone-recu">
+  {% if commande.recu_disponible %}
+    <a class="bouton bouton--principal" href="{% url 'commandes:recu' commande.numero %}">Télécharger mon reçu (PDF)</a>
+  {% elif commande.statut != 'annulee' %}
+    <p class="note">Votre reçu sera disponible ici dès que le magasin aura vérifié la commande.</p>
+  {% endif %}
+  {% if commande.mode == 'retrait' and commande.statut == 'prete' %}
+    <p class="encart encart--retrait">Votre commande vous attend au magasin{% if MAGASIN.adresse %} : {{ MAGASIN.adresse }}{% endif %}{% if MAGASIN.horaires %} · {{ MAGASIN.horaires }}{% endif %}.</p>
+  {% endif %}
+</div>

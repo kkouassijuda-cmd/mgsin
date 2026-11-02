@@ -1,0 +1,118 @@
+/* Panier, commande, suivi des commandes */
+
+.panier__ref { display: block; font-size: 0.8rem; color: var(--texte-doux); }
+.panier__quantite { display: flex; align-items: center; gap: 6px; margin: 0; }
+.panier__quantite input {
+  width: 70px; padding: 6px 8px; font: inherit;
+  border: 1px solid var(--bordure); border-radius: 6px;
+}
+
+/* Page « Finaliser la commande » */
+
+.commander { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; align-items: start; }
+.commander__formulaire {
+  background: var(--surface); border-radius: var(--rayon); box-shadow: var(--ombre); padding: 24px;
+}
+.recapitulatif {
+  background: var(--surface); border-radius: var(--rayon); box-shadow: var(--ombre);
+  padding: 20px; position: sticky; top: 16px;
+}
+.recapitulatif__liste { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 8px; }
+.recapitulatif__ligne, .recapitulatif__total { display: flex; justify-content: space-between; gap: 12px; }
+.recapitulatif__ligne { font-size: 0.95rem; }
+.recapitulatif__total {
+  border-top: 3px solid var(--jaune); padding-top: 10px;
+  font-weight: 700; font-size: 1.1rem; color: var(--bleu);
+}
+
+/* Masquage selon le mode choisi (classe posée par commander.js sur le formulaire) */
+.mode-retrait #champ-adresse,
+.mode-retrait #champ-paiement,
+.mode-retrait #info-livraison,
+.mode-livraison #info-retrait { display: none; }
+
+/* Liste « Mes commandes » */
+
+.liste-commandes { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.ligne-commande {
+  display: grid; grid-template-columns: 1.3fr 1fr 1.2fr 1fr auto; align-items: center; gap: 12px;
+  background: var(--surface); border-radius: var(--rayon); box-shadow: var(--ombre);
+  padding: 14px 16px; color: var(--texte); text-decoration: none;
+  border-left: 4px solid transparent;
+}
+.ligne-commande:hover { border-left-color: var(--jaune); }
+.ligne-commande__numero { font-weight: 700; color: var(--bleu); font-family: ui-monospace, Consolas, monospace; }
+.ligne-commande__date, .ligne-commande__mode { color: var(--texte-doux); font-size: 0.9rem; }
+.ligne-commande__total { font-weight: 600; text-align: right; }
+.ligne-commande__message { grid-column: 1 / -1; font-size: 0.9rem; color: var(--bleu); }
+.liste-commandes__recu { display: inline-block; margin: 6px 0 0 16px; font-size: 0.9rem; font-weight: 600; }
+
+.zone-recu { margin-bottom: 24px; }
+
+/* Effet visuel quand le suivi change en temps réel (actualiser.js) */
+.zone--mise-a-jour .message-etape { animation: mise-a-jour 2s ease-out; }
+@keyframes mise-a-jour {
+  0% { background: var(--jaune-clair); transform: scale(1.01); }
+  100% { background: var(--surface); transform: none; }
+}
+
+/* Message de l'étape en cours, en haut du détail d'une commande */
+
+.message-etape {
+  font-size: 1.1rem; font-weight: 600; color: var(--bleu);
+  background: var(--surface); border-left: 5px solid var(--jaune);
+  border-radius: var(--rayon); box-shadow: var(--ombre); padding: 14px 18px; margin-bottom: 16px;
+}
+.message-etape--livree, .message-etape--retiree { border-left-color: var(--vert); color: var(--vert); }
+.message-etape--annulee { border-left-color: var(--rouge); color: var(--rouge); }
+
+/* Détail d'une commande */
+
+.detail-entete { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 16px; }
+.detail-entete h1 { margin: 0; }
+.detail-grille { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 20px; align-items: start; }
+
+.suivi {
+  list-style: none; margin: 0 0 24px; padding: 20px;
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  background: var(--surface); border-radius: var(--rayon); box-shadow: var(--ombre);
+}
+.suivi__etape {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  text-align: center; font-size: 0.85rem; color: var(--texte-doux);
+}
+.suivi__etape::before {
+  content: ""; position: absolute; top: 9px; left: -50%; width: 100%; height: 3px;
+  background: var(--bordure); z-index: 0;
+}
+.suivi__etape:first-child::before { display: none; }
+.suivi__point {
+  position: relative; z-index: 1; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--surface); border: 3px solid var(--bordure);
+}
+.suivi__etape--faite { color: var(--texte); }
+.suivi__etape--faite::before, .suivi__etape--en-cours::before { background: var(--bleu); }
+.suivi__etape--faite .suivi__point { background: var(--bleu); border-color: var(--bleu); }
+.suivi__etape--en-cours { color: var(--bleu); font-weight: 700; }
+.suivi__etape--en-cours .suivi__point { background: var(--jaune); border-color: var(--bleu); }
+
+.annulation {
+  background: var(--rouge-clair); border-left: 4px solid var(--rouge);
+  border-radius: var(--rayon); padding: 14px 16px; margin-bottom: 24px;
+}
+.annulation__titre { font-weight: 700; color: var(--rouge); }
+.annulation p:last-child { margin: 0; }
+
+@media (max-width: 860px) {
+  .commander, .detail-grille { grid-template-columns: 1fr; }
+  .recapitulatif { position: static; order: -1; }
+}
+
+@media (max-width: 640px) {
+  .commander__formulaire { padding: 16px; }
+  .ligne-commande { grid-template-columns: 1fr auto; gap: 4px 12px; }
+  .ligne-commande__total { text-align: left; }
+  .suivi { grid-template-columns: 1fr; gap: 12px; padding: 16px; }
+  .suivi__etape { flex-direction: row; text-align: left; }
+  .suivi__etape::before { display: none; }
+}

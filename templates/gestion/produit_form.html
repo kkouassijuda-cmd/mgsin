@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static statique %}
+{% block titre %}{% if produit %}{{ produit.nom }}{% else %}Nouvelle pièce{% endif %} · Gestion{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% statique 'css/formulaires.css' %}">
+  <link rel="stylesheet" href="{% statique 'css/gestion.css' %}">
+{% endblock %}
+
+{% block contenu %}
+{% include "gestion/_menu.html" %}
+<p class="fil"><a href="{% url 'gestion:produits' %}">← Pièces et stock</a></p>
+
+<section class="carte-formulaire carte-formulaire--large">
+  <h1>{% if produit %}Modifier « {{ produit.nom }} »{% else %}Nouvelle pièce{% endif %}</h1>
+  <form method="post" enctype="multipart/form-data" class="formulaire">
+    {% csrf_token %}
+    {% include "partials/formulaire.html" %}
+    <button class="bouton bouton--principal" type="submit">Enregistrer</button>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static statique fcfa %}
+{% block titre %}Supprimer {{ produit.nom }} · Gestion{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% statique 'css/formulaires.css' %}">
+  <link rel="stylesheet" href="{% statique 'css/gestion.css' %}">
+{% endblock %}
+
+{% block contenu %}
+{% include "gestion/_menu.html" %}
+
+<section class="carte-formulaire">
+  <h1>Supprimer cette pièce ?</h1>
+  <dl class="infos">
+    <dt>Référence</dt><dd>{{ produit.ref }}</dd>
+    <dt>Pièce</dt><dd>{{ produit.nom }}</dd>
+    <dt>Catégorie</dt><dd>{{ produit.categorie.nom }}</dd>
+    <dt>Prix</dt><dd>{{ produit.prix_fcfa|fcfa }}</dd>
+    <dt>Stock</dt><dd>{{ produit.stock }}</dd>
+  </dl>
+
+  <div class="encart">
+    <p>La pièce et sa photo seront <strong>définitivement</strong> retirées de la base de données.</p>
+    {% if nb_commandes %}
+      <p>Elle figure dans {{ nb_commandes }} commande{{ nb_commandes|pluralize }} : ces commandes et leurs reçus
+        gardent la référence, le nom et le prix.</p>
+    {% endif %}
+    {% if nb_en_attente %}
+      <p><strong>{{ nb_en_attente }} commande{{ nb_en_attente|pluralize }} en attente</strong> la contien{{ nb_en_attente|pluralize:"t,nent" }} :
+        elle{{ nb_en_attente|pluralize }} ne pourr{{ nb_en_attente|pluralize:"a,ont" }} plus être validée{{ nb_en_attente|pluralize }}, il faudra l{{ nb_en_attente|pluralize:"a,es" }} annuler.</p>
+    {% endif %}
+    <p>Pour seulement la cacher de la boutique, décochez plutôt « En vente » dans
+      <a href="{% url 'gestion:produit_modifier' produit.pk %}">Modifier</a>.</p>
+  </div>
+
+  <form method="post" class="actions">
+    {% csrf_token %}
+    <a class="bouton" href="{% url 'gestion:produits' %}">Annuler</a>
+    <button class="bouton bouton--danger" type="submit">Supprimer définitivement</button>
+  </form>
+</section>
+{% endblock %}

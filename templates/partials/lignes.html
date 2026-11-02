@@ -1,0 +1,22 @@
+{% load fcfa %}
+<div class="tableau-defilant">
+  <table class="tableau">
+    <thead>
+      <tr><th>Réf.</th><th>Pièce</th><th class="nombre">Qté</th><th class="nombre">Prix unitaire</th><th class="nombre">Montant</th></tr>
+    </thead>
+    <tbody>
+      {% for l in commande.lignes.all %}
+        <tr>
+          <td class="ref">{{ l.ref }}</td>
+          <td>{{ l.nom }}</td>
+          <td class="nombre">{{ l.quantite }}</td>
+          <td class="nombre">{{ l.prix_unitaire|fcfa }}</td>
+          <td class="nombre">{{ l.sous_total|fcfa }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr><th colspan="4" class="nombre">Total</th><th class="nombre">{{ commande.total_fcfa|fcfa }}</th></tr>
+    </tfoot>
+  </table>
+</div>

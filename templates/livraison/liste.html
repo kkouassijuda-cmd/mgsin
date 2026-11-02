@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static statique fcfa %}
+{% block titre %}Mes livraisons · {{ MAGASIN.nom }}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% statique 'css/livraison.css' %}">{% endblock %}
+{% block body_attrs %} data-rafraichir="{{ RAFRAICHISSEMENT_SECONDES }}"{% endblock %}
+
+{% block contenu %}
+<h1>Livraisons en cours</h1>
+
+{% if commandes %}
+  <ul class="livraisons">
+    {% for c in commandes %}
+      <li class="carte-livraison">
+        <a class="carte-livraison__lien" href="{% url 'livraison:detail' c.numero %}">
+          <span class="carte-livraison__numero">{{ c.numero }}</span>
+          <span class="carte-livraison__client">{{ c.client_prenom }} {{ c.client_nom }} · {{ c.client_telephone }}</span>
+          <span class="carte-livraison__adresse">{{ c.adresse }}</span>
+          <span class="carte-livraison__montant">{{ c.total_fcfa|fcfa }} · {{ c.get_paiement_display }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="vide">Aucune livraison en cours pour vous.</p>
+{% endif %}
+{% endblock %}

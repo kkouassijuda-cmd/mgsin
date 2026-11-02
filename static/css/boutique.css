@@ -1,0 +1,126 @@
+/* Boutique : catalogue par catégorie, recherche, fiche pièce */
+
+.boutique { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 24px; align-items: start; }
+
+/* Menu des catégories : bouton « trois barres » ; ouvert, la liste forme une colonne à gauche.
+   L'état ouvert/fermé est retenu d'une page à l'autre par js/categories.js. */
+.categories { position: sticky; top: 16px; }
+.categories[open] { width: 230px; }
+.categories__bouton {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  list-style: none; user-select: none;
+  background: var(--surface); border: 1px solid var(--bordure); border-radius: var(--rayon);
+  box-shadow: var(--ombre); padding: 9px 14px; font-weight: 600; color: var(--bleu);
+}
+.categories__bouton::-webkit-details-marker { display: none; }
+.categories__bouton:hover { border-color: var(--bleu); }
+.categories__bouton:focus-visible { outline: 2px solid var(--jaune); outline-offset: 2px; }
+.categories__titre { text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.95rem; }
+.categories__courante {
+  color: var(--texte-doux); font-weight: 400;
+  padding-left: 10px; border-left: 1px solid var(--bordure);
+}
+
+/* Les trois barres : la barre du milieu + ::before et ::after */
+.categories__icone { position: relative; display: inline-block; width: 22px; height: 16px; }
+.categories__icone span,
+.categories__icone::before,
+.categories__icone::after {
+  content: ""; position: absolute; left: 0; width: 100%; height: 3px;
+  border-radius: 2px; background: var(--bleu);
+  transition: transform 0.2s, opacity 0.2s;
+}
+.categories__icone::before { top: 0; }
+.categories__icone span { top: 6.5px; }
+.categories__icone::after { bottom: 0; }
+/* Menu ouvert : les barres forment une croix */
+.categories[open] .categories__icone::before { transform: translateY(6.5px) rotate(45deg); }
+.categories[open] .categories__icone span { opacity: 0; }
+.categories[open] .categories__icone::after { transform: translateY(-6.5px) rotate(-45deg); }
+
+.categories__liste {
+  list-style: none; margin: 6px 0 0; padding: 8px; display: grid; gap: 2px;
+  background: var(--surface); border: 1px solid var(--bordure);
+  border-radius: var(--rayon); box-shadow: var(--ombre);
+}
+.categories__lien {
+  display: block; padding: 7px 10px; border-radius: 6px;
+  color: var(--texte); text-decoration: none;
+}
+.categories__lien:hover { background: var(--gris-clair); }
+.categories__lien--actif { background: var(--bleu); color: #fff; font-weight: 600; }
+.categories__lien--actif:hover { background: var(--bleu); }
+
+.catalogue__entete {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 12px; margin-bottom: 16px;
+}
+.catalogue__entete h1 { margin: 0; }
+.catalogue__resultat { color: var(--texte-doux); }
+
+.recherche { display: flex; gap: 8px; flex: 1 1 320px; max-width: 460px; }
+.recherche__champ {
+  flex: 1; min-width: 0; padding: 9px 12px; font: inherit;
+  border: 1px solid var(--bordure); border-radius: var(--rayon);
+}
+
+.grille-produits {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px;
+}
+
+.carte-produit {
+  display: flex; flex-direction: column; background: var(--surface);
+  border-radius: var(--rayon); box-shadow: var(--ombre); overflow: hidden;
+}
+.carte-produit__image {
+  display: flex; align-items: center; justify-content: center;
+  aspect-ratio: 4 / 3; background: var(--gris-clair);
+}
+.carte-produit__image img { width: 100%; height: 100%; object-fit: cover; }
+.carte-produit__image .carte-produit__vide,
+.fiche__image .carte-produit__vide { width: 64px; height: 64px; object-fit: contain; opacity: 0.35; }
+.carte-produit__corps { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px 14px; flex: 1; }
+.carte-produit__corps form { margin-top: auto; }
+.carte-produit__ref { margin: 0; font-size: 0.8rem; color: var(--texte-doux); }
+.carte-produit__nom { margin: 0; font-size: 1rem; }
+.carte-produit__nom a { color: var(--texte); text-decoration: none; }
+.carte-produit__nom a:hover { text-decoration: underline; }
+.carte-produit__prix { margin: 4px 0 0; font-size: 1.15rem; font-weight: 700; color: var(--bleu); }
+
+.stock { margin: 0 0 8px; font-size: 0.85rem; font-weight: 600; }
+.stock--ok { color: var(--vert); }
+.stock--rupture { color: var(--rouge); }
+
+.fiche { background: var(--surface); border-radius: var(--rayon); box-shadow: var(--ombre); padding: 24px; }
+.fiche__grille { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+.fiche__image {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--gris-clair); border-radius: var(--rayon); aspect-ratio: 1;
+  overflow: hidden;
+}
+.fiche__image img { width: 100%; height: 100%; object-fit: contain; }
+.fiche__nom { font-size: 1.5rem; }
+.fiche__prix { font-size: 1.6rem; font-weight: 700; color: var(--bleu); }
+.fiche__ajout { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; margin: 12px 0 20px; }
+.fiche__quantite { display: grid; gap: 4px; font-size: 0.9rem; font-weight: 600; }
+.fiche__quantite input {
+  width: 90px; padding: 9px 10px; font: inherit;
+  border: 1px solid var(--bordure); border-radius: var(--rayon);
+}
+.fiche__sous-titre { font-size: 1rem; margin-top: 8px; }
+.fiche__caracteristiques { color: var(--texte); }
+
+@media (max-width: 860px) {
+  .boutique { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .categories { position: static; }
+  .categories[open] { width: auto; }
+  .fiche__grille { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .grille-produits { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .carte-produit__corps { padding: 10px; }
+  .recherche { max-width: none; }
+  .fiche { padding: 16px; }
+}

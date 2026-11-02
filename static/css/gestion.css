@@ -1,0 +1,77 @@
+/* Espace Gestion du magasin */
+
+.sous-menu {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px;
+  border-bottom: 2px solid var(--bordure);
+}
+.sous-menu__lien {
+  padding: 8px 14px; color: var(--texte-doux); text-decoration: none; font-weight: 600;
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+}
+.sous-menu__lien:hover { color: var(--bleu); }
+.sous-menu__lien--actif { color: var(--bleu); border-bottom-color: var(--jaune); }
+
+.gestion-entete {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 12px; margin-bottom: 16px;
+}
+.gestion-entete h1 { margin: 0; }
+
+.filtres { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 16px; }
+.filtres input[type="search"], .filtres select {
+  padding: 8px 10px; font: inherit; border: 1px solid var(--bordure);
+  border-radius: var(--rayon); background: var(--surface);
+}
+.filtres input[type="search"] { min-width: 240px; }
+.filtres .choix { padding: 7px 10px; }
+
+.alerte {
+  background: var(--orange-clair); border-left: 4px solid var(--orange);
+  border-radius: var(--rayon); padding: 10px 14px;
+}
+.alerte a { color: var(--orange); font-weight: 600; }
+
+.raccourcis { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.raccourcis__lien {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px; border-radius: 999px; background: var(--surface);
+  box-shadow: var(--ombre); text-decoration: none; color: var(--texte); font-size: 0.9rem;
+}
+.raccourcis__nombre {
+  background: var(--bleu); color: #fff; border-radius: 999px;
+  padding: 0 8px; font-size: 0.8rem; font-weight: 700;
+}
+
+.section-statut { margin-bottom: 32px; scroll-margin-top: 16px; }
+.section-statut__titre { display: flex; align-items: center; gap: 10px; }
+
+.ligne--alerte td { color: var(--orange); font-weight: 600; }
+
+.actions-commande { display: grid; gap: 14px; }
+.actions-commande h2 { margin: 0; }
+.annuler summary { list-style: none; width: fit-content; }
+.annuler summary::-webkit-details-marker { display: none; }
+.annuler[open] summary { margin-bottom: 12px; }
+
+.historique { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.historique__ligne {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--gris-clair);
+}
+.historique__date { font-family: ui-monospace, Consolas, monospace; font-size: 0.85rem; }
+.historique__commentaire { flex-basis: 100%; color: var(--texte-doux); font-style: italic; }
+
+@media (max-width: 640px) {
+  .filtres input[type="search"] { min-width: 0; flex: 1 1 100%; }
+}
+
+/* Boutons Modifier / Supprimer dans la liste des pièces */
+.actions-ligne { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+
+/* Filtre « Stock bas (≤ N) » : le seuil N est modifiable */
+.filtres__seuil { gap: 6px; }
+.filtres__seuil label { cursor: pointer; }
+.filtres__seuil input[type="number"] {
+  width: 4.5em; padding: 4px 6px; font: inherit; text-align: center;
+  border: 1px solid var(--bordure); border-radius: 6px; background: var(--surface);
+}

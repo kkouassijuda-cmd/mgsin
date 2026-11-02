@@ -1,0 +1,7 @@
+{% extends "admin/base_site.html" %}
+{# Ajoute « Espace Gestion » dans la barre du haut de l'administration Django. #}
+
+{% block userlinks %}
+  {% if user.est_magasin %}<a href="{% url 'gestion:tableau_de_bord' %}">Espace Gestion</a> /{% endif %}
+  {{ block.super }}
+{% endblock %}

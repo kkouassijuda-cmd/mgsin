@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static statique %}
+{% block titre %}Connexion{% if espace_personnel %} · Espace personnel{% endif %} · {{ MAGASIN.nom }}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% statique 'css/formulaires.css' %}">{% endblock %}
+
+{% block contenu %}
+<section class="carte-formulaire">
+  {% if espace_personnel %}
+    <h1>Connexion · Espace personnel</h1>
+    <p class="carte-formulaire__intro">Réservé au personnel du magasin et aux livreurs.</p>
+  {% else %}
+    <h1>Connexion</h1>
+  {% endif %}
+  <form method="post" class="formulaire">
+    {% csrf_token %}
+    {% include "partials/formulaire.html" %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button class="bouton bouton--principal" type="submit">Se connecter</button>
+  </form>
+  {% if not espace_personnel %}
+    <p class="carte-formulaire__bas">
+      Pas encore de compte ?
+      <a href="{% url 'comptes:inscription' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Créer un compte</a>
+    </p>
+  {% endif %}
+</section>
+{% endblock %}

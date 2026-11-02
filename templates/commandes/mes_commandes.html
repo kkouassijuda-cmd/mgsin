@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static statique %}
+{% block titre %}Mes commandes · {{ MAGASIN.nom }}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% statique 'css/commandes.css' %}">{% endblock %}
+
+{% block contenu %}
+<h1>Mes commandes</h1>
+
+<div id="liste-commandes" data-actualiser="{% url 'commandes:mes_commandes_etat' %}" data-secondes="{{ SUIVI_CLIENT_SECONDES }}">
+  {% include "commandes/_liste_client.html" %}
+</div>
+{% endblock %}
+
+{% block js %}<script src="{% statique 'js/actualiser.js' %}" defer></script>{% endblock %}

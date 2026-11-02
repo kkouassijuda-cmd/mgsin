@@ -1,0 +1,53 @@
+/* Formulaires : connexion, inscription, compte, commande, gestion */
+
+.carte-formulaire {
+  max-width: 480px; margin: 0 auto; background: var(--surface);
+  border-radius: var(--rayon); box-shadow: var(--ombre); padding: 28px;
+}
+.carte-formulaire--large { max-width: 720px; }
+.carte-formulaire__intro { color: var(--texte-doux); }
+.espaces-personnel {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;
+  padding-bottom: 20px; border-bottom: 1px solid var(--bordure);
+}
+.carte-formulaire__bas { margin: 20px 0 0; text-align: center; font-size: 0.95rem; }
+
+.formulaire { display: grid; gap: 16px; }
+.formulaire--ligne { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.formulaire--ligne .champ { flex: 1 1 220px; }
+
+.champ { display: grid; gap: 6px; }
+.champ__label { font-weight: 600; font-size: 0.95rem; }
+.champ__groupe { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; }
+.champ__aide { margin: 0; font-size: 0.85rem; color: var(--texte-doux); }
+.champ__aide ul { margin: 4px 0 0; padding-left: 18px; }
+.champ__erreur { margin: 0; font-size: 0.85rem; color: var(--rouge); }
+.champ--erreur input, .champ--erreur textarea, .champ--erreur select { border-color: var(--rouge); }
+
+.champ input:not([type="checkbox"]):not([type="radio"]),
+.champ textarea,
+.champ select {
+  width: 100%; padding: 10px 12px; font: inherit; color: var(--texte);
+  background: var(--surface); border: 1px solid var(--bordure); border-radius: var(--rayon);
+}
+.champ input:focus, .champ textarea:focus, .champ select:focus {
+  outline: 2px solid var(--jaune); outline-offset: 1px; border-color: var(--bleu);
+}
+
+.choix {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  padding: 10px 12px; border: 1px solid var(--bordure); border-radius: var(--rayon);
+  background: var(--surface);
+}
+.choix:has(input:checked) { border-color: var(--bleu); background: var(--gris-clair); }
+.choix input { width: 18px; height: 18px; accent-color: var(--bleu); margin: 0; }
+.champ--case .choix { border: 0; padding: 0; background: none; }
+
+.erreurs {
+  list-style: none; margin: 0; padding: 10px 14px; border-radius: var(--rayon);
+  background: var(--rouge-clair); color: var(--rouge);
+}
+
+@media (max-width: 640px) {
+  .carte-formulaire { padding: 20px 16px; }
+}

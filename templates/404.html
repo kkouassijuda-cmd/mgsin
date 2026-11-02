@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block titre %}Page introuvable · {{ MAGASIN.nom }}{% endblock %}
+
+{% block contenu %}
+<section class="page-erreur">
+  <h1>Page introuvable</h1>
+  <p>Cette page n'existe pas ou n'est plus disponible.</p>
+  <a class="bouton" href="{% url 'catalogue:accueil' %}">Retour à la boutique</a>
+</section>
+{% endblock %}

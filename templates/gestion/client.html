@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static statique fcfa %}
+{% block titre %}{{ client.get_full_name }} · Gestion{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% statique 'css/commandes.css' %}">
+  <link rel="stylesheet" href="{% statique 'css/gestion.css' %}">
+{% endblock %}
+
+{% block contenu %}
+{% include "gestion/_menu.html" %}
+<p class="fil"><a href="{% url 'gestion:clients' %}">← Clients</a></p>
+
+<h1>{{ client.get_full_name }}</h1>
+<section class="bloc">
+  <dl class="infos">
+    <dt>Téléphone</dt><dd><a href="tel:{{ client.telephone }}">{{ client.telephone_affiche }}</a></dd>
+    <dt>Adresse habituelle</dt><dd>{{ client.adresse_habituelle|default:"—"|linebreaksbr }}</dd>
+    <dt>Inscrit le</dt><dd>{{ client.date_inscription|date:"d/m/Y" }}</dd>
+  </dl>
+</section>
+
+<h2>Commandes</h2>
+{% if commandes %}
+  <ul class="liste-commandes">
+    {% for c in commandes %}
+      <li class="liste-commandes__item">
+        <a class="ligne-commande" href="{% url 'gestion:commande' c.numero %}">
+          <span class="ligne-commande__numero">{{ c.numero }}</span>
+          <span class="ligne-commande__date">{{ c.date_creation|date:"d/m/Y H:i" }}</span>
+          <span class="ligne-commande__mode">{{ c.get_mode_display }}</span>
+          <span class="ligne-commande__total">{{ c.total_fcfa|fcfa }}</span>
+          <span class="badge badge--{{ c.statut }}">{{ c.get_statut_display }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="vide">Aucune commande.</p>
+{% endif %}
+{% endblock %}

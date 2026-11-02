@@ -1,0 +1,63 @@
+{% load static statique %}<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titre %}{{ MAGASIN.nom }}{% endblock %}</title>
+  <link rel="icon" href="{% static 'img/logo.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% statique 'css/base.css' %}">
+  {% block css %}{% endblock %}
+</head>
+<body{% block body_attrs %}{% endblock %}>
+  <header class="entete">
+    <div class="entete__barre conteneur">
+      <a class="logo" href="{% url 'catalogue:accueil' %}">
+        <img class="logo__image" src="{% static 'img/technopieces-logo.svg' %}" alt="{{ MAGASIN.nom }}" width="636" height="222">
+      </a>
+
+      <nav class="nav" aria-label="Navigation principale">
+        <a class="nav__lien" href="{% url 'catalogue:accueil' %}">Boutique</a>
+        {% if user.is_authenticated %}
+          <a class="nav__lien" href="{% url 'commandes:mes_commandes' %}">Mes commandes</a>
+          <a class="nav__lien" href="{% url 'comptes:profil' %}">Mon compte</a>
+          <form class="nav__form" method="post" action="{% url 'comptes:deconnexion' %}">
+            {% csrf_token %}
+            <button class="nav__lien nav__bouton" type="submit">Déconnexion</button>
+          </form>
+        {% else %}
+          <a class="nav__lien" href="{% url 'comptes:connexion' %}">Connexion</a>
+          {% if not espace_personnel %}<a class="nav__lien" href="{% url 'comptes:inscription' %}">Créer un compte</a>{% endif %}
+        {% endif %}
+        <a class="nav__panier" href="{% url 'commandes:panier' %}">
+          Panier <span class="nav__compteur">{{ nombre_articles_panier }}</span>
+        </a>
+      </nav>
+    </div>
+    <div class="entete__bande" aria-hidden="true"></div>
+  </header>
+
+  <main class="conteneur contenu">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li class="message message--{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% block contenu %}{% endblock %}
+  </main>
+
+  <footer class="pied">
+    <div class="conteneur pied__contenu">
+      <p><strong>{{ MAGASIN.nom }}</strong>{% if MAGASIN.adresse %} · {{ MAGASIN.adresse }}{% endif %}</p>
+      {% if MAGASIN.telephone or MAGASIN.horaires %}
+        <p>{% if MAGASIN.telephone %}Tél. {{ MAGASIN.telephone }}{% endif %}{% if MAGASIN.telephone and MAGASIN.horaires %} · {% endif %}{{ MAGASIN.horaires }}</p>
+      {% endif %}
+    </div>
+  </footer>
+
+  <script src="{% statique 'js/rafraichir.js' %}" defer></script>
+  {% block js %}{% endblock %}
+</body>
+</html>

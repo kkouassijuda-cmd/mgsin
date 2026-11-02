@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static statique fcfa %}
+{% block titre %}{% if categorie %}{{ categorie.nom }} · {% endif %}{{ MAGASIN.nom }}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% statique 'css/boutique.css' %}">{% endblock %}
+
+{% block contenu %}
+<div class="boutique">
+  {% include "catalogue/_categories.html" %}
+
+  <section class="catalogue">
+    <div class="catalogue__entete">
+      <h1>{% if categorie %}{{ categorie.nom }}{% else %}Toutes les pièces{% endif %}</h1>
+      <form class="recherche" method="get" role="search">
+        <label class="visuellement-cache" for="q">Rechercher une pièce</label>
+        <input class="recherche__champ" type="search" id="q" name="q" value="{{ recherche }}" placeholder="Nom, référence, caractéristique…">
+        <button class="bouton" type="submit">Rechercher</button>
+      </form>
+    </div>
+
+    {% if recherche %}
+      <p class="catalogue__resultat">{{ page.paginator.count }} résultat{{ page.paginator.count|pluralize }} pour « {{ recherche }} »</p>
+    {% endif %}
+
+    {% if page.object_list %}
+      <ul class="grille-produits">
+        {% for p in page.object_list %}
+          <li class="carte-produit">
+            <a class="carte-produit__image" href="{{ p.get_absolute_url }}">
+              {% if p.photo %}
+                <img src="{{ p.photo.url }}" alt="{{ p.nom }}" loading="lazy">
+              {% else %}
+                <img class="carte-produit__vide" src="{% static 'img/logo.svg' %}" alt="">
+              {% endif %}
+            </a>
+            <div class="carte-produit__corps">
+              <p class="carte-produit__ref">{{ p.ref }}</p>
+              <h2 class="carte-produit__nom"><a href="{{ p.get_absolute_url }}">{{ p.nom }}</a></h2>
+              <p class="carte-produit__prix">{{ p.prix_fcfa|fcfa }}</p>
+              {% if p.stock > 0 %}
+                <p class="stock stock--ok">En stock ({{ p.stock }})</p>
+                <form method="post" action="{% url 'commandes:panier_ajouter' p.pk %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="suivant" value="{{ request.get_full_path }}">
+                  <button class="bouton bouton--principal bouton--plein" type="submit">Ajouter au panier</button>
+                </form>
+              {% else %}
+                <p class="stock stock--rupture">Rupture de stock</p>
+              {% endif %}
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+      {% include "partials/pagination.html" %}
+    {% else %}
+      <p class="vide">Aucune pièce ne correspond{% if recherche %} à votre recherche{% endif %}.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

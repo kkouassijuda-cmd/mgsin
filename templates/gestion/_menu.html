@@ -1,0 +1,8 @@
+{% with nom=request.resolver_match.url_name %}
+<nav class="sous-menu" aria-label="Gestion">
+  <a class="sous-menu__lien{% if nom == 'tableau_de_bord' or nom == 'commande' %} sous-menu__lien--actif{% endif %}" href="{% url 'gestion:tableau_de_bord' %}">Commandes</a>
+  <a class="sous-menu__lien{% if 'produit' in nom %} sous-menu__lien--actif{% endif %}" href="{% url 'gestion:produits' %}">Pièces et stock</a>
+  <a class="sous-menu__lien{% if 'client' in nom %} sous-menu__lien--actif{% endif %}" href="{% url 'gestion:clients' %}">Clients</a>
+  {% if user.is_superuser %}<a class="sous-menu__lien" href="{% url 'admin:index' %}">Administration</a>{% endif %}
+</nav>
+{% endwith %}

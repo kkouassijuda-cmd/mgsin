@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static statique fcfa %}
+{% block titre %}Panier · {{ MAGASIN.nom }}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% statique 'css/commandes.css' %}">{% endblock %}
+
+{% block contenu %}
+<h1>Mon panier</h1>
+
+{% if lignes %}
+  <div class="tableau-defilant">
+    <table class="tableau panier">
+      <thead>
+        <tr><th>Pièce</th><th class="nombre">Prix unitaire</th><th>Quantité</th><th class="nombre">Montant</th><th><span class="visuellement-cache">Retirer</span></th></tr>
+      </thead>
+      <tbody>
+        {% for l in lignes %}
+          <tr>
+            <td>
+              <a href="{{ l.produit.get_absolute_url }}">{{ l.produit.nom }}</a>
+              <span class="panier__ref">{{ l.produit.ref }}</span>
+            </td>
+            <td class="nombre">{{ l.produit.prix_fcfa|fcfa }}</td>
+            <td>
+              <form class="panier__quantite" method="post" action="{% url 'commandes:panier_modifier' l.produit.pk %}">
+                {% csrf_token %}
+                <label class="visuellement-cache" for="qte-{{ l.produit.pk }}">Quantité</label>
+                <input id="qte-{{ l.produit.pk }}" type="number" name="quantite" value="{{ l.quantite }}" min="0" max="{{ l.produit.stock }}">
+                <button class="bouton bouton--petit" type="submit">Mettre à jour</button>
+              </form>
+            </td>
+            <td class="nombre">{{ l.sous_total|fcfa }}</td>
+            <td>
+              <form method="post" action="{% url 'commandes:panier_retirer' l.produit.pk %}">
+                {% csrf_token %}
+                <button class="bouton bouton--lien" type="submit">Retirer</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr><th colspan="3" class="nombre">Total</th><th class="nombre">{{ total|fcfa }}</th><th></th></tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="actions">
+    <a class="bouton" href="{% url 'catalogue:accueil' %}">Continuer mes achats</a>
+    <a class="bouton bouton--principal" href="{% url 'commandes:commander' %}">Commander</a>
+  </div>
+  {% if not user.is_authenticated %}
+    <p class="note">Vous devrez vous connecter ou créer un compte pour valider la commande.</p>
+  {% endif %}
+{% else %}
+  <p class="vide">Votre panier est vide.</p>
+  <a class="bouton bouton--principal" href="{% url 'catalogue:accueil' %}">Voir les pièces</a>
+{% endif %}
+{% endblock %}

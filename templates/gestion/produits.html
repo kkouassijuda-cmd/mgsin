@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static statique fcfa %}
+{% block titre %}Pièces et stock · Gestion{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% statique 'css/formulaires.css' %}">
+  <link rel="stylesheet" href="{% statique 'css/gestion.css' %}">
+{% endblock %}
+
+{% block contenu %}
+{% include "gestion/_menu.html" %}
+
+<div class="gestion-entete">
+  <h1>Pièces et stock</h1>
+  <a class="bouton bouton--principal" href="{% url 'gestion:produit_ajouter' %}">Ajouter une pièce</a>
+</div>
+
+<form class="filtres" method="get">
+  <label class="visuellement-cache" for="q">Rechercher</label>
+  <input type="search" id="q" name="q" value="{{ recherche }}" placeholder="Nom ou référence">
+  <label class="visuellement-cache" for="categorie">Catégorie</label>
+  <select id="categorie" name="categorie">
+    <option value="">Toutes les catégories</option>
+    {% for c in categories %}
+      <option value="{{ c.slug }}"{% if categorie == c.slug %} selected{% endif %}>{{ c.nom }}</option>
+    {% endfor %}
+  </select>
+  <div class="choix filtres__seuil">
+    <input type="checkbox" id="stock-bas" name="stock" value="bas"{% if stock_bas %} checked{% endif %}>
+    <label for="stock-bas">Stock bas (≤</label>
+    <label class="visuellement-cache" for="seuil">Seuil de stock bas</label>
+    <input type="number" id="seuil" name="seuil" value="{{ seuil_stock_bas }}" min="0" max="100000" step="1">
+    <span>)</span>
+  </div>
+  <button class="bouton" type="submit">Filtrer</button>
+</form>
+
+{% if page.object_list %}
+  <div class="tableau-defilant">
+    <table class="tableau">
+      <thead>
+        <tr><th>Réf.</th><th>Pièce</th><th>Catégorie</th><th class="nombre">Prix</th><th class="nombre">Stock</th><th>En vente</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for p in page.object_list %}
+          <tr{% if p.stock <= seuil_stock_bas %} class="ligne--alerte"{% endif %}>
+            <td class="ref">{{ p.ref }}</td>
+            <td>{{ p.nom }}</td>
+            <td>{{ p.categorie.nom }}</td>
+            <td class="nombre">{{ p.prix_fcfa|fcfa }}</td>
+            <td class="nombre">{{ p.stock }}</td>
+            <td>{{ p.en_vente|yesno:"Oui,Non" }}</td>
+            <td>
+              <div class="actions-ligne">
+                <a class="bouton bouton--petit" href="{% url 'gestion:produit_modifier' p.pk %}">Modifier</a>
+                <a class="bouton bouton--petit bouton--danger" href="{% url 'gestion:produit_supprimer' p.pk %}">Supprimer</a>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "partials/pagination.html" %}
+{% else %}
+  <p class="vide">Aucune pièce.</p>
+{% endif %}
+{% endblock %}

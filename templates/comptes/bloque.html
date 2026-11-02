@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static statique %}
+{% block titre %}Connexion bloquée · {{ MAGASIN.nom }}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% statique 'css/formulaires.css' %}">{% endblock %}
+
+{% block contenu %}
+<section class="carte-formulaire">
+  <h1>Connexion temporairement bloquée</h1>
+  <p>Trop de tentatives de connexion ont échoué. Réessayez dans 30 minutes{% if MAGASIN.telephone %}, ou contactez le magasin au {{ MAGASIN.telephone }}{% endif %}.</p>
+</section>
+{% endblock %}

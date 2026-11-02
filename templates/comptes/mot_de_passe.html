@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static statique %}
+{% block titre %}Mot de passe · {{ MAGASIN.nom }}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% statique 'css/formulaires.css' %}">{% endblock %}
+
+{% block contenu %}
+<section class="carte-formulaire">
+  <h1>Changer mon mot de passe</h1>
+  <form method="post" class="formulaire">
+    {% csrf_token %}
+    {% include "partials/formulaire.html" %}
+    <button class="bouton bouton--principal" type="submit">Changer le mot de passe</button>
+  </form>
+  <p class="carte-formulaire__bas"><a href="{% url 'comptes:profil' %}">← Retour à mon compte</a></p>
+</section>
+{% endblock %}

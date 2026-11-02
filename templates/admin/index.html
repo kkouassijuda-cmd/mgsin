@@ -1,0 +1,16 @@
+{% extends "admin/index.html" %}
+{# Accueil de l'administration : accès direct à l'espace Gestion, avant la liste des modèles. #}
+
+{% block content %}
+  {% if user.est_magasin %}
+    <div class="module">
+      <table>
+        <caption>Gestion du magasin</caption>
+        <tr><th scope="row"><a href="{% url 'gestion:tableau_de_bord' %}">Commandes à traiter</a></th></tr>
+        <tr><th scope="row"><a href="{% url 'gestion:produits' %}">Pièces et stock</a></th></tr>
+        <tr><th scope="row"><a href="{% url 'gestion:clients' %}">Clients</a></th></tr>
+      </table>
+    </div>
+  {% endif %}
+  {{ block.super }}
+{% endblock %}

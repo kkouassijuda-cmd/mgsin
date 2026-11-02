@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static statique fcfa %}
+{% block titre %}{{ commande.numero }} · Gestion{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% statique 'css/formulaires.css' %}">
+  <link rel="stylesheet" href="{% statique 'css/commandes.css' %}">
+  <link rel="stylesheet" href="{% statique 'css/gestion.css' %}">
+{% endblock %}
+
+{% block contenu %}
+{% include "gestion/_menu.html" %}
+<p class="fil"><a href="{% url 'gestion:tableau_de_bord' %}">← Toutes les commandes</a></p>
+
+<div class="detail-entete">
+  <h1>Commande {{ commande.numero }}</h1>
+  <span class="badge badge--{{ commande.statut }}">{{ commande.get_statut_display }}</span>
+</div>
+
+{% include "partials/suivi.html" %}
+
+<section class="bloc actions-commande">
+  <h2>Actions</h2>
+  {% if peut_avancer %}
+    <form method="post" action="{% url 'gestion:commande_avancer' commande.numero %}" class="formulaire formulaire--ligne">
+      {% csrf_token %}
+      {% if livreur_form %}{% include "partials/formulaire.html" with form=livreur_form %}{% endif %}
+      <button class="bouton bouton--principal" type="submit">{{ commande.action_suivante }}</button>
+    </form>
+  {% elif commande.statut == 'livraison' %}
+    <p class="note">Confiée à {{ commande.livreur.get_full_name|default:"un livreur" }}. La livraison sera confirmée par le livreur.</p>
+  {% elif commande.est_terminee %}
+    <p class="note">Commande terminée.</p>
+  {% endif %}
+
+  {% if commande.recu_disponible %}
+    <a class="bouton" href="{% url 'commandes:recu' commande.numero %}">Reçu PDF</a>
+  {% endif %}
+
+  {% if annulation_form %}
+    <details class="annuler">
+      <summary class="bouton bouton--danger">Annuler la commande…</summary>
+      <form method="post" action="{% url 'gestion:commande_annuler' commande.numero %}" class="formulaire">
+        {% csrf_token %}
+        {% include "partials/formulaire.html" with form=annulation_form %}
+        {% if commande.stock_deduit %}<p class="note">Le stock déjà déduit sera remis en place.</p>{% endif %}
+        <button class="bouton bouton--danger" type="submit">Confirmer l'annulation</button>
+      </form>
+    </details>
+  {% endif %}
+</section>
+
+<div class="detail-grille">
+  <section class="bloc">
+    <h2>Client</h2>
+    <dl class="infos">
+      <dt>Nom</dt><dd>{{ commande.client_prenom }} {{ commande.client_nom }}</dd>
+      <dt>Téléphone</dt><dd><a href="tel:{{ commande.client_telephone }}">{{ commande.client_telephone }}</a></dd>
+      <dt>Compte</dt><dd><a href="{% url 'gestion:client' commande.client_id %}">{{ commande.client }}</a></dd>
+      <dt>Mode</dt><dd>{{ commande.get_mode_display }}</dd>
+      {% if commande.adresse %}<dt>Adresse</dt><dd>{{ commande.adresse|linebreaksbr }}</dd>{% endif %}
+      <dt>Paiement</dt><dd>{{ commande.get_paiement_display }} · {% if commande.encaisse %}encaissé{% else %}non encaissé{% endif %}</dd>
+      {% if commande.livreur %}<dt>Livreur</dt><dd>{{ commande.livreur.get_full_name }}</dd>{% endif %}
+    </dl>
+  </section>
+
+  <section class="bloc">
+    <h2>Pièces</h2>
+    {% include "partials/lignes.html" %}
+  </section>
+</div>
+
+<section class="bloc">
+  <h2>Historique</h2>
+  <ul class="historique">
+    {% for h in commande.historique.all %}
+      <li class="historique__ligne">
+        <span class="historique__date">{{ h.date|date:"d/m/Y H:i" }}</span>
+        <span class="badge badge--{{ h.statut }}">{{ h.get_statut_display }}</span>
+        <span class="discret">par {{ h.utilisateur.get_full_name|default:"—" }}</span>
+        {% if h.commentaire %}<span class="historique__commentaire">{{ h.commentaire }}</span>{% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

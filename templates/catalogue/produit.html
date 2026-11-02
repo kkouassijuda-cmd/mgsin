@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static statique fcfa %}
+{% block titre %}{{ produit.nom }} · {{ MAGASIN.nom }}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% statique 'css/boutique.css' %}">{% endblock %}
+
+{% block contenu %}
+<div class="boutique">
+  {% include "catalogue/_categories.html" with categorie=produit.categorie %}
+
+  <article class="fiche">
+    <p class="fil"><a href="{{ produit.categorie.get_absolute_url }}">← {{ produit.categorie.nom }}</a></p>
+    <div class="fiche__grille">
+      <div class="fiche__image">
+        {% if produit.photo %}
+          <img src="{{ produit.photo.url }}" alt="{{ produit.nom }}">
+        {% else %}
+          <img class="carte-produit__vide" src="{% static 'img/logo.svg' %}" alt="">
+        {% endif %}
+      </div>
+      <div class="fiche__infos">
+        <p class="carte-produit__ref">Réf. {{ produit.ref }}</p>
+        <h1 class="fiche__nom">{{ produit.nom }}</h1>
+        <p class="fiche__prix">{{ produit.prix_fcfa|fcfa }}</p>
+        {% if produit.stock > 0 %}
+          <p class="stock stock--ok">En stock ({{ produit.stock }} disponible{{ produit.stock|pluralize }})</p>
+          <form class="fiche__ajout" method="post" action="{% url 'commandes:panier_ajouter' produit.pk %}">
+            {% csrf_token %}
+            <label class="fiche__quantite">Quantité
+              <input type="number" name="quantite" value="1" min="1" max="{{ produit.stock }}">
+            </label>
+            <button class="bouton bouton--principal" type="submit">Ajouter au panier</button>
+          </form>
+        {% else %}
+          <p class="stock stock--rupture">Rupture de stock</p>
+        {% endif %}
+        {% if produit.caracteristiques %}
+          <h2 class="fiche__sous-titre">Caractéristiques</h2>
+          <p class="fiche__caracteristiques">{{ produit.caracteristiques|linebreaksbr }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </article>
+</div>
+{% endblock %}

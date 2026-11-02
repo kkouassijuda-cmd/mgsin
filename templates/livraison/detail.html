@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static statique fcfa %}
+{% block titre %}{{ commande.numero }} · Livraison{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% statique 'css/formulaires.css' %}">
+  <link rel="stylesheet" href="{% statique 'css/livraison.css' %}">
+{% endblock %}
+
+{% block contenu %}
+<p class="fil"><a href="{% url 'livraison:liste' %}">← Mes livraisons</a></p>
+<h1>Livraison {{ commande.numero }}</h1>
+
+<section class="bloc">
+  <dl class="infos">
+    <dt>Client</dt><dd>{{ commande.client_prenom }} {{ commande.client_nom }}</dd>
+    <dt>Téléphone</dt><dd><a class="bouton bouton--petit" href="tel:{{ commande.client_telephone }}">Appeler {{ commande.client_telephone }}</a></dd>
+    <dt>Adresse</dt><dd>{{ commande.adresse|linebreaksbr }}</dd>
+    <dt>Paiement</dt><dd>{{ commande.get_paiement_display }}</dd>
+    <dt>À encaisser</dt><dd class="montant">{{ commande.total_fcfa|fcfa }}</dd>
+  </dl>
+</section>
+
+<section class="bloc">
+  <h2>Pièces</h2>
+  {% include "partials/lignes.html" %}
+</section>
+
+<form class="bloc formulaire confirmation" method="post" action="{% url 'livraison:confirmer' commande.numero %}">
+  {% csrf_token %}
+  <label class="choix">
+    <input type="checkbox" name="encaisse"{% if especes %} required{% endif %}>
+    <span>J'ai encaissé {{ commande.total_fcfa|fcfa }}{% if not especes %} (ou le paiement {{ commande.get_paiement_display }} est confirmé){% endif %}</span>
+  </label>
+  <button class="bouton bouton--principal bouton--plein" type="submit">Confirmer la livraison</button>
+</form>
+{% endblock %}

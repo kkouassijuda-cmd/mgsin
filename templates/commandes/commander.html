@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static statique fcfa %}
+{% block titre %}Commander · {{ MAGASIN.nom }}{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% statique 'css/formulaires.css' %}">
+  <link rel="stylesheet" href="{% statique 'css/commandes.css' %}">
+{% endblock %}
+
+{% block contenu %}
+<h1>Finaliser la commande</h1>
+
+<div class="commander">
+  <form method="post" class="formulaire commander__formulaire" id="formulaire-commande">
+    {% csrf_token %}
+    {% include "partials/formulaire.html" %}
+    <div class="encart encart--retrait" id="info-retrait">
+      <p><strong>Retrait au magasin</strong>{% if MAGASIN.adresse %} : {{ MAGASIN.adresse }}{% endif %}{% if MAGASIN.horaires %} · {{ MAGASIN.horaires }}{% endif %}.</p>
+      <p>Paiement au magasin, au moment du retrait. Votre reçu est disponible dès la commande.</p>
+    </div>
+    <div class="encart encart--livraison" id="info-livraison">
+      <p>Le magasin vérifie votre commande, puis votre reçu devient disponible. Un livreur vous apporte la commande.</p>
+    </div>
+    <button class="bouton bouton--principal bouton--plein" type="submit">Confirmer la commande</button>
+  </form>
+
+  <aside class="recapitulatif">
+    <h2>Récapitulatif</h2>
+    <ul class="recapitulatif__liste">
+      {% for l in lignes %}
+        <li class="recapitulatif__ligne">
+          <span>{{ l.quantite }} × {{ l.produit.nom }}</span>
+          <span>{{ l.sous_total|fcfa }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+    <p class="recapitulatif__total"><span>Total</span><span>{{ total|fcfa }}</span></p>
+    <a class="bouton bouton--lien" href="{% url 'commandes:panier' %}">Modifier le panier</a>
+  </aside>
+</div>
+{% endblock %}
+
+{% block js %}<script src="{% statique 'js/commander.js' %}" defer></script>{% endblock %}

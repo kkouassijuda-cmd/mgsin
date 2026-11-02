@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static statique fcfa %}
+{% block titre %}Gestion des commandes · {{ MAGASIN.nom }}{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% statique 'css/commandes.css' %}">
+  <link rel="stylesheet" href="{% statique 'css/gestion.css' %}">
+{% endblock %}
+{% block body_attrs %} data-rafraichir="{{ RAFRAICHISSEMENT_SECONDES }}"{% endblock %}
+
+{% block contenu %}
+{% include "gestion/_menu.html" %}
+
+<div class="gestion-entete">
+  <h1>Commandes</h1>
+  <form class="filtres" method="get">
+    <label class="visuellement-cache" for="q">Rechercher</label>
+    <input type="search" id="q" name="q" value="{{ recherche }}" placeholder="N° de commande, nom, téléphone">
+    <label class="visuellement-cache" for="mode">Mode</label>
+    <select id="mode" name="mode">
+      <option value="">Tous les modes</option>
+      {% for valeur, libelle in modes %}
+        <option value="{{ valeur }}"{% if mode == valeur %} selected{% endif %}>{{ libelle }}</option>
+      {% endfor %}
+    </select>
+    <button class="bouton" type="submit">Filtrer</button>
+  </form>
+</div>
+
+{% if stock_bas %}
+  <p class="alerte"><a href="{% url 'gestion:produits' %}?stock=bas">{{ stock_bas }} pièce{{ stock_bas|pluralize }} en stock bas</a></p>
+{% endif %}
+
+<nav class="raccourcis" aria-label="Sections">
+  {% for s in sections %}
+    <a class="raccourcis__lien" href="#{{ s.ancre }}">{{ s.titre }} <span class="raccourcis__nombre">{{ s.commandes|length }}</span></a>
+  {% endfor %}
+</nav>
+
+{% for s in sections %}
+  <section class="section-statut" id="{{ s.ancre }}">
+    <h2 class="section-statut__titre">{{ s.titre }} <span class="raccourcis__nombre">{{ s.commandes|length }}</span></h2>
+    {% if s.commandes %}
+      <div class="tableau-defilant">
+        <table class="tableau tableau--cliquable">
+          <thead>
+            <tr><th>N°</th><th>Date</th><th>Client</th><th>Mode</th><th>Paiement</th><th class="nombre">Total</th><th>Statut</th><th></th></tr>
+          </thead>
+          <tbody>
+            {% for c in s.commandes %}
+              <tr>
+                <td class="ref">{{ c.numero }}</td>
+                <td>{{ c.date_creation|date:"d/m H:i" }}</td>
+                <td>{{ c.client_prenom }} {{ c.client_nom }}<br><span class="discret">{{ c.client_telephone }}</span></td>
+                <td>{{ c.get_mode_display }}</td>
+                <td>{{ c.get_paiement_display }}{% if c.encaisse %} <span class="discret">· encaissé</span>{% endif %}</td>
+                <td class="nombre">{{ c.total_fcfa|fcfa }}</td>
+                <td><span class="badge badge--{{ c.statut }}">{{ c.get_statut_display }}</span></td>
+                <td><a class="bouton bouton--petit" href="{% url 'gestion:commande' c.numero %}">Ouvrir</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="vide">Aucune commande.</p>
+    {% endif %}
+  </section>
+{% endfor %}
+{% endblock %}
