@@ -25,7 +25,8 @@ Puis :
 ```powershell
 python manage.py migrate            # tables + 6 catégories + groupes Magasin et Livreur
 python manage.py createsuperuser    # ton compte administrateur (identifiant = téléphone)
-python manage.py donnees_demo       # facultatif : catalogue d'exemple et comptes de test
+python manage.py charger_catalogue   # 22 pièces avec photos, caractéristiques et prix indicatifs
+python manage.py donnees_demo       # facultatif : le même catalogue + comptes de test (jamais en production)
 python manage.py runserver
 ```
 
