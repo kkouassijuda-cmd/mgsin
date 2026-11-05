@@ -5,15 +5,15 @@
   <div class="champ{% if champ.errors %} champ--erreur{% endif %}{% if champ.widget_type == 'checkbox' %} champ--case{% endif %}" id="champ-{{ champ.name }}">
     {% if champ.widget_type == 'radioselect' %}
       <fieldset class="champ__groupe">
-        <legend class="champ__label">{{ champ.label }}</legend>
+        <legend class="champ__label">{{ champ.label }}{% if champ.field.required %}<abbr class="champ__obligatoire" title="obligatoire">*</abbr>{% endif %}</legend>
         {% for choix in champ %}
           <label class="choix">{{ choix.tag }} <span>{{ choix.choice_label }}</span></label>
         {% endfor %}
       </fieldset>
     {% elif champ.widget_type == 'checkbox' %}
-      <label class="choix">{{ champ }} <span>{{ champ.label }}</span></label>
+      <label class="choix">{{ champ }} <span>{{ champ.label }}{% if champ.field.required %}<abbr class="champ__obligatoire" title="obligatoire">*</abbr>{% endif %}</span></label>
     {% else %}
-      <label class="champ__label" for="{{ champ.id_for_label }}">{{ champ.label }}</label>
+      <label class="champ__label" for="{{ champ.id_for_label }}">{{ champ.label }}{% if champ.field.required %}<abbr class="champ__obligatoire" title="obligatoire">*</abbr>{% endif %}</label>
       {{ champ }}
     {% endif %}
     {% if champ.help_text %}<p class="champ__aide">{{ champ.help_text|safe }}</p>{% endif %}

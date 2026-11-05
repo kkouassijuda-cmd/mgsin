@@ -51,3 +51,9 @@
 @media (max-width: 640px) {
   .carte-formulaire { padding: 20px 16px; }
 }
+
+/* Étoile rouge des champs obligatoires */
+.champ__obligatoire {
+  color: var(--rouge); font-weight: 700; margin-left: 3px;
+  text-decoration: none; border: 0; cursor: help;
+}
